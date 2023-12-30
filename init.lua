@@ -17,7 +17,12 @@ local module,c_rules,tags_hash,settings,fallbacks = {},{class={},instance={}},{}
 local function on_selected_change(tag,data)
     if data and data.exec_once and tag.selected then
         for _,v in ipairs(type(data.exec_once) == "string" and {data.exec_once} or data.exec_once) do
-            awful.spawn.single_instance(v)
+            -- awful.spawn.single_instance(v)
+            if v == "qutebrowser" then
+                awful.spawn.with_shell("pgrep -u $USER -x " .. v .. " > /dev/null || (" .. v .. ")")
+            else
+                awful.spawn.with_shell("pgrep -u $USER -x '" .. v .. "' > /dev/null || (urxvtc -name " .. v .. " -title " .. v .. " -e /bin/zsh -i -c " .. v .. ")")
+            end
         end
     end
 end
